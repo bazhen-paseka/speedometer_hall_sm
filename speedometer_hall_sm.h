@@ -18,6 +18,12 @@
 **************************************************************************
 */
 
+	#include "main.h"
+	#include "speedometer_Hall_local_config.h"
+	#include <string.h>
+	#include <stdio.h>
+	#include "usart.h"
+
 /*
 **************************************************************************
 *								    DEFINES                     
@@ -47,5 +53,12 @@
 *                              FUNCTION PROTOTYPES
 **************************************************************************
 */
+
+void Speedometer_init (void) ;
+void Speedometer_main (void) ;
+
+void Debug_print( char * _string ) ;
+void Debug_init( UART_HandleTypeDef * _huart ) ;
+
 
 #endif /* SPEEDOMETER_HALL_SM_H_ */
