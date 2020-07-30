@@ -65,7 +65,8 @@ typedef struct	{
 
 	#define	DEBUG_STRING_SIZE		300
 
-	int counter = 0;
+	volatile uint32_t counter_u32 = 0;
+	uint32_t previous_value_u32 = 0;
 
 	 tm1637_struct h1_tm1637 =
 	  {
@@ -120,10 +121,14 @@ void Speedometer_main (void) {
 	if ( IRQ_flag == 1 ) {
 		char debugString[DEBUG_STRING_SIZE] ;
 		HAL_GPIO_TogglePin(LED_GPIO_Port, LED_Pin) ;
-		sprintf(debugString,"%04d\r\n", counter++) ;
+
+		uint32_t speed_u32 = ( (counter_u32 - previous_value_u32) * 337 * 3600) / 1000000;
+
+		sprintf(debugString,"%04d\r\n", (int)speed_u32) ;
 		Debug_print( debugString ) ;
 
-		tm1637_Display_Decimal(&h1_tm1637, counter, no_double_dot) ;
+		tm1637_Display_Decimal(&h1_tm1637, speed_u32, no_double_dot) ;
+		previous_value_u32 = counter_u32;
 		IRQ_flag = 0 ;
 	}
 	//HAL_Delay(1000);
