@@ -24,6 +24,7 @@
 	#include <stdio.h>
 	#include "usart.h"
 	#include "tm1637_sm.h"
+	#include "tim.h"
 
 /*
 **************************************************************************

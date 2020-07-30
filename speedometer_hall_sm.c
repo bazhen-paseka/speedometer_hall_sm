@@ -74,6 +74,8 @@ typedef struct	{
 		 .dio_pin  = GPIO_PIN_15,
 		 .dio_port = GPIOB
 	  };
+
+	 volatile uint8_t IRQ_flag = 0;
 /*
 **************************************************************************
 *                        LOCAL FUNCTION PROTOTYPES
@@ -108,18 +110,23 @@ void Speedometer_init (void) {
 	tm1637_Set_Brightness(&h1_tm1637, bright_45percent);
 	tm1637_Display_Decimal(&h1_tm1637, 8765, double_dot);
 	HAL_Delay(1000);
+
+	HAL_TIM_Base_Start(&htim4);
+	HAL_TIM_Base_Start_IT(&htim4);
 }
 //***********************************************************
 
 void Speedometer_main (void) {
-  	char debugString[DEBUG_STRING_SIZE];
-	HAL_GPIO_TogglePin(LED_GPIO_Port, LED_Pin);
-	sprintf(debugString,"%04d\r\n", counter++) ;
-	Debug_print( debugString ) ;
+	if ( IRQ_flag == 1 ) {
+		char debugString[DEBUG_STRING_SIZE] ;
+		HAL_GPIO_TogglePin(LED_GPIO_Port, LED_Pin) ;
+		sprintf(debugString,"%04d\r\n", counter++) ;
+		Debug_print( debugString ) ;
 
-	tm1637_Display_Decimal(&h1_tm1637, counter, no_double_dot);
-
-	HAL_Delay(1000);
+		tm1637_Display_Decimal(&h1_tm1637, counter, no_double_dot) ;
+		IRQ_flag = 0 ;
+	}
+	//HAL_Delay(1000);
 }
 //***********************************************************
 
